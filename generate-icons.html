@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Icon Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #fff;
+    }
+    #instructions {
+      background: #2a2a2a;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    canvas {
+      display: none;
+    }
+    button {
+      background: #27e1fa;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin: 5px;
+    }
+    button:hover {
+      background: #fae127;
+    }
+    #iconPreview {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 20px;
+    }
+    .icon-item {
+      text-align: center;
+      background: #2a2a2a;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .icon-item img {
+      width: 100%;
+      height: auto;
+      border: 1px solid #27e1fa;
+    }
+  </style>
+</head>
+<body>
+  <div id="instructions">
+    <h1>PWA Icon Generator</h1>
+    <p>This tool will generate all required PWA icons for your calculator app.</p>
+    <p><strong>Instructions:</strong></p>
+    <ol>
+      <li>Click "Generate All Icons" button below</li>
+      <li>Each icon will be automatically downloaded</li>
+      <li>Create a folder called "icons" in your Calculator directory</li>
+      <li>Move all downloaded icon files to the "icons" folder</li>
+    </ol>
+    <button onclick="generateAllIcons()">Generate All Icons</button>
+  </div>
+
+  <div id="iconPreview"></div>
+
+  <script>
+    const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+
+    function createIcon(size) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Background
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, size, size);
+
+      // Gradient circle
+      const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+      gradient.addColorStop(0, 'rgba(39, 225, 250, 0.3)');
+      gradient.addColorStop(1, 'rgba(39, 225, 250, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, size, size);
+
+      // Percentage symbol
+      ctx.fillStyle = '#27e1fa';
+      ctx.strokeStyle = '#27e1fa';
+      ctx.lineWidth = size * 0.08;
+
+      // Draw % symbol
+      const centerX = size / 2;
+      const centerY = size / 2;
+      const radius = size * 0.12;
+
+      // Top circle of %
+      ctx.beginPath();
+      ctx.arc(centerX - size * 0.15, centerY - size * 0.15, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Bottom circle of %
+      ctx.beginPath();
+      ctx.arc(centerX + size * 0.15, centerY + size * 0.15, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Diagonal line of %
+      ctx.beginPath();
+      ctx.moveTo(centerX - size * 0.25, centerY + size * 0.25);
+      ctx.lineTo(centerX + size * 0.25, centerY - size * 0.25);
+      ctx.stroke();
+
+      // Border
+      ctx.strokeStyle = '#27e1fa';
+      ctx.lineWidth = size * 0.02;
+      ctx.strokeRect(0, 0, size, size);
+
+      // Corner accents
+      const accentSize = size * 0.15;
+      ctx.lineWidth = size * 0.015;
+
+      // Top-left corner
+      ctx.beginPath();
+      ctx.moveTo(0, accentSize);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(accentSize, 0);
+      ctx.stroke();
+
+      // Bottom-right corner
+      ctx.beginPath();
+      ctx.moveTo(size - accentSize, size);
+      ctx.lineTo(size, size);
+      ctx.lineTo(size, size - accentSize);
+      ctx.stroke();
+
+      return canvas;
+    }
+
+    function downloadIcon(canvas, size) {
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `icon-${size}x${size}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function generateAllIcons() {
+      const previewDiv = document.getElementById('iconPreview');
+      previewDiv.innerHTML = '';
+
+      sizes.forEach((size, index) => {
+        setTimeout(() => {
+          const canvas = createIcon(size);
+          downloadIcon(canvas, size);
+
+          // Show preview
+          const iconItem = document.createElement('div');
+          iconItem.className = 'icon-item';
+          iconItem.innerHTML = `
+            <img src="${canvas.toDataURL()}" alt="${size}x${size} icon">
+            <p>${size}x${size}</p>
+          `;
+          previewDiv.appendChild(iconItem);
+        }, index * 500); // Delay each download by 500ms
+      });
+    }
+  </script>
+</body>
+</html>

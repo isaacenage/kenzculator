@@ -1,0 +1,450 @@
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenzculator</title>
+
+  <!-- PWA Meta Tags -->
+  <meta name="description" content="A futuristic percentage calculator for quick calculations">
+  <meta name="theme-color" content="#27e1fa">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="% Calc">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Apple Touch Icons (iOS Home Screen) -->
+  <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
+
+  <!-- Favicons (Browser) -->
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+
+  <!-- Futuristic Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Electrolize&display=swap" rel="stylesheet">
+
+  <!-- AnimeJS for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Electrolize', sans-serif;
+      background-color: #000000;
+      background-image:
+        linear-gradient(0deg, transparent 24%, rgba(2, 22, 26, 0.8) 25%, rgba(2, 22, 26, 0.8) 26%, transparent 27%, transparent 74%, rgba(2, 22, 26, 0.8) 75%, rgba(2, 22, 26, 0.8) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(2, 22, 26, 0.8) 25%, rgba(2, 22, 26, 0.8) 26%, transparent 27%, transparent 74%, rgba(2, 22, 26, 0.8) 75%, rgba(2, 22, 26, 0.8) 76%, transparent 77%, transparent);
+      background-size: 50px 50px;
+      background-position: 0 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Radial gradient overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, rgba(39, 225, 250, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      background: rgba(2, 22, 26, 0.85);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      width: 100%;
+      max-width: 450px;
+      position: relative;
+      z-index: 1;
+      border: 1px solid rgba(39, 225, 250, 0.3);
+      box-shadow:
+        0 0 20px rgba(39, 225, 250, 0.2),
+        inset 0 0 20px rgba(39, 225, 250, 0.05);
+    }
+
+    /* Corner accents for container */
+    .container::before,
+    .container::after {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: 2px solid #27e1fa;
+    }
+
+    .container::before {
+      top: -2px;
+      left: -2px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .container::after {
+      bottom: -2px;
+      right: -2px;
+      border-left: none;
+      border-top: none;
+    }
+
+    h2 {
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #eeeeee;
+      font-size: 1.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 10px rgba(39, 225, 250, 0.5);
+      opacity: 0;
+      animation: fadeInTitle 0.6s ease-out 0.2s forwards;
+    }
+
+    @keyframes fadeInTitle {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    label {
+      font-family: 'Electrolize', sans-serif;
+      font-weight: 400;
+      display: block;
+      margin-bottom: 10px;
+      color: #87f7fc;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid rgba(39, 225, 250, 0.3);
+      background: rgba(4, 59, 59, 0.3);
+      margin-bottom: 25px;
+      font-size: 1rem;
+      font-family: 'Electrolize', sans-serif;
+      color: #eeeeee;
+      transition: all 250ms ease-out;
+      outline: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: #27e1fa;
+      background: rgba(4, 59, 59, 0.5);
+      box-shadow:
+        0 0 15px rgba(39, 225, 250, 0.3),
+        inset 0 0 10px rgba(39, 225, 250, 0.1);
+    }
+
+    input[type="number"]::placeholder {
+      color: #bbbbbb;
+      opacity: 0.6;
+    }
+
+    /* Futuristic SVG Button */
+    .btn-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    button {
+      position: relative;
+      width: 100%;
+      padding: 16px;
+      border: none;
+      background: rgba(39, 225, 250, 0.125);
+      color: #27e1fa;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 250ms ease-out;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      overflow: hidden;
+    }
+
+    button:hover {
+      background: rgba(250, 225, 39, 0.125);
+      color: #fae127;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    /* SVG Frame for button */
+    .btn-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .btn-frame path {
+      fill: none;
+      stroke: rgba(39, 225, 250, 0.5);
+      stroke-width: 2;
+      transition: stroke 250ms ease-out;
+    }
+
+    button:hover + .btn-frame path {
+      stroke: rgba(250, 225, 39, 0.5);
+    }
+
+    .result {
+      margin-top: 30px;
+      background: rgba(4, 59, 59, 0.3);
+      padding: 20px;
+      border: 1px solid rgba(39, 225, 250, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .result.show {
+      animation: fadeInResult 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeInResult {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result p {
+      margin: 12px 0;
+      font-family: 'Electrolize', sans-serif;
+      color: #cccccc;
+      font-size: 0.95rem;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 3px solid #27e1fa;
+      transition: all 250ms ease-out;
+    }
+
+    .result p:hover {
+      background: rgba(39, 225, 250, 0.1);
+      border-left-color: #fae127;
+      color: #eeeeee;
+    }
+
+    .result p:last-child {
+      border-left-color: #fae127;
+      color: #fae127;
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-top: 15px;
+    }
+
+    /* Responsive adjustments */
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      h2 {
+        font-size: 1.4rem;
+        letter-spacing: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Kenzculator</h2>
+    <label for="basePrice">Enter Base Price:</label>
+    <input type="number" id="basePrice" placeholder="Enter amount" onkeypress="handleKeyPress(event)">
+
+    <div class="btn-wrapper">
+      <button id="calcBtn" onclick="calculate()">Calculate</button>
+      <svg class="btn-frame" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M0,0 L100,0 L100,100" vector-effect="non-scaling-stroke" />
+        <path d="M100,100 L0,100 L0,0" vector-effect="non-scaling-stroke" />
+      </svg>
+    </div>
+
+    <div class="result" id="resultBox">
+      <p id="twelvePercent"></p>
+      <p id="afterTwelve"></p>
+      <p id="twentyPercent"></p>
+      <p id="total"></p>
+    </div>
+  </div>
+
+  <script>
+    // Initialize audio elements
+    const clickSound = new Audio('sounds/click.mp3');
+    const transmissionSound = new Audio('sounds/transmission.mp3');
+
+    // Initialize button animation on load
+    window.addEventListener('DOMContentLoaded', () => {
+      const btnFrame = document.querySelector('.btn-frame');
+      const paths = btnFrame.querySelectorAll('path');
+
+      // Animate button frame on load
+      anime({
+        targets: paths,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        easing: 'linear',
+        duration: 800,
+        delay: anime.stagger(100)
+      });
+    });
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        calculate();
+      }
+    }
+
+    function calculate() {
+      // Play click sound
+      clickSound.currentTime = 0; // Reset to start
+      clickSound.play()
+        .then(() => console.log('Click sound played'))
+        .catch(e => console.log('Click sound failed:', e));
+
+      const base = parseFloat(document.getElementById('basePrice').value);
+
+      if (isNaN(base) || base <= 0) {
+        // Shake animation for invalid input
+        anime({
+          targets: '#basePrice',
+          translateX: [
+            { value: -10, duration: 100 },
+            { value: 10, duration: 100 },
+            { value: -10, duration: 100 },
+            { value: 10, duration: 100 },
+            { value: 0, duration: 100 }
+          ],
+          easing: 'easeInOutSine'
+        });
+        return;
+      }
+
+      // Calculations
+      const twelvePercent = base * 0.12;
+      const afterTwelve = base + twelvePercent;
+      const twentyPercent = afterTwelve * 0.20;
+      const total = afterTwelve + twentyPercent;
+
+      // Update content
+      document.getElementById('twelvePercent').innerText = `12% of Base: CA$${twelvePercent.toFixed(2)}`;
+      document.getElementById('afterTwelve').innerText = `After adding 12%: CA$${afterTwelve.toFixed(2)}`;
+      document.getElementById('twentyPercent').innerText = `20% of subtotal: CA$${twentyPercent.toFixed(2)}`;
+      document.getElementById('total').innerText = `Total: CA$${total.toFixed(2)}`;
+
+      // Show result box with animation
+      const resultBox = document.getElementById('resultBox');
+      resultBox.classList.add('show');
+
+      // Play transmission sound when results show
+      transmissionSound.currentTime = 0; // Reset to start
+      transmissionSound.play()
+        .then(() => console.log('Transmission sound played'))
+        .catch(e => console.log('Transmission sound failed:', e));
+
+      // Animate each result line with stagger
+      const resultParagraphs = resultBox.querySelectorAll('p');
+      anime({
+        targets: resultParagraphs,
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        easing: 'easeOutCubic',
+        duration: 400,
+        delay: anime.stagger(100, { start: 200 })
+      });
+
+      // Button pulse effect
+      anime({
+        targets: '#calcBtn',
+        scale: [1, 0.95, 1],
+        duration: 200,
+        easing: 'easeInOutQuad'
+      });
+    }
+
+    // Register Service Worker for PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then((registration) => {
+            console.log('Service Worker registered successfully:', registration.scope);
+
+            // Check for updates periodically
+            setInterval(() => {
+              registration.update();
+            }, 60000); // Check every minute
+          })
+          .catch((error) => {
+            console.log('Service Worker registration failed:', error);
+          });
+      });
+    }
+
+    // Handle install prompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later
+      deferredPrompt = e;
+
+      // Optionally, show your own install button
+      console.log('PWA install prompt available');
+
+      // You can show a custom install button here if desired
+      // For now, the browser's default prompt will be used
+    });
+
+    // Track installation
+    window.addEventListener('appinstalled', (e) => {
+      console.log('PWA was installed successfully');
+      deferredPrompt = null;
+    });
+
+    // Detect if app is running in standalone mode
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+      console.log('Running as installed PWA');
+      document.body.classList.add('standalone-mode');
+    }
+  </script>
+
+
+</body></html>
