@@ -310,7 +310,7 @@
   <script>
     // Initialize audio elements
     const clickSound = new Audio('sounds/click.mp3');
-    const transmissionSound = new Audio('sounds/transmission.mp3');
+    const transmissionSound = new Audio('sounds/fade.mp3');
 
     // Initialize button animation on load
     window.addEventListener('DOMContentLoaded', () => {
@@ -403,7 +403,7 @@
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
+        navigator.serviceWorker.register('/kenzculator/service-worker.js')
           .then((registration) => {
             console.log('Service Worker registered successfully:', registration.scope);
 
